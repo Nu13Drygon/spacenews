@@ -1,25 +1,52 @@
-import logo from './logo.svg';
+import { Component, Fragment } from 'react';
+// Components
+import Homepage from './Homepage';
+import Main from './Main';
+// Styling
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends Component {
+
+  constructor() {
+    super()
+    this.state = {
+      homepage: false,
+      newsData: []
+    }
+  }
+
+  // Hooks
+  componentDidMount() {
+    fetch('https://api.spaceflightnewsapi.net/v3/articles')
+      .then(response => response.json())
+      .then(data => this.setState({newsData: data}))
+  }
+
+  // Events
+  onClickHomepage = () => {
+    this.setState({homepage: !this.state.homepage})
+  }
+
+
+  render() {
+    const {homepage, newsData} = this.state
+
+    return (
+      <Fragment>
+        {
+        homepage ? 
+          <Homepage onClickHomepage={this.onClickHomepage} /> :
+          <div className='d-flex flex-column align-items-center'>
+            <Main newsData={newsData} />
+          </div> 
+        }
+      </Fragment>
+    )
+  }
 }
 
 export default App;
